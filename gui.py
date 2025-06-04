@@ -10,11 +10,18 @@ def classify(weights, input_vec):
     return 1 if result >= 0 else -1
 
 # Streamlit UI
-st.title("Character Classifier using ANN")
+st.title("Character Classifier")
 st.sidebar.header("Configuration")
 
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"])
-learning_rate = st.sidebar.slider("Learning Rate (α)", 0.01, 1.0, 0.1, step=0.01)
+learning_rate = st.sidebar.slider(
+    "Training Epochs",
+    min_value=0.000001,
+    max_value=0.01,
+    value=0.00001,      # Default value shown on the slider
+    step=0.0001,      # Smallest increment
+    format="%.6f"      # Display with 5 decimal places
+)
 epochs = st.sidebar.slider("Training Epochs", 5000, 100000, 20000, step=1000)
 
 if st.button("Train Model"):
@@ -52,11 +59,11 @@ if canvas_result.image_data is not None:
             resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
             flattened = resized.flatten() / 255.0  # normalize
 
-            model = st.session_state
+            model = st.session_state.model
             output = model.predict(flattened)
             predicted_index = np.argmax(output)
             result = main.letters_list[predicted_index]
-            st.write(f"Classification Result: {result} (Output: {np.round(result, 2)})")
+            st.write(f"Classification Result: {result}")
 
         '''if algorithm == "Perceptron":
             #to be written
