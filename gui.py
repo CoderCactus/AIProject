@@ -15,7 +15,16 @@ st.sidebar.header("Configuration")
 
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"])
 learning_rate = st.sidebar.slider("Learning Rate (α)", 0.01, 1.0, 0.1, step=0.01)
-epochs = st.sidebar.slider("Training Epochs", 10, 500, 100, step=10)
+epochs = st.sidebar.slider("Training Epochs", 5000, 100000, 20000, step=1000)
+
+if st.button("Train Model"):
+    if algorithm == "Perceptron":
+        #to be written
+        print()
+    elif algorithm == "Widrow-Hoff":
+        model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
+        model.train()
+        st.session_state.model = model
 
 st.header("Draw a Character")
 
@@ -30,16 +39,6 @@ canvas_result = st_canvas(
     key="canvas",
 )
 
-if st.button("Train Model"):
-    if algorithm == "Perceptron":
-        #to be written
-        print()
-    elif algorithm == "Widrow-Hoff":
-        model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
-        model.train()
-        st.session_state.model = model
-
-
 if canvas_result.image_data is not None:
     img = canvas_result.image_data
 
@@ -53,10 +52,11 @@ if canvas_result.image_data is not None:
             resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
             flattened = resized.flatten() / 255.0  # normalize
 
-            model = st.session_state.model
-            result = model.predict(flattened)
-            predicted_index = np.argmax(result)
-            st.write(f"Classification Result: {predicted_index} (Output: {np.round(result, 2)})")
+            model = st.session_state
+            output = model.predict(flattened)
+            predicted_index = np.argmax(output)
+            result = main.letters_list[predicted_index]
+            st.write(f"Classification Result: {result} (Output: {np.round(result, 2)})")
 
         '''if algorithm == "Perceptron":
             #to be written
