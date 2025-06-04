@@ -49,8 +49,6 @@ canvas_result = st_canvas(
 if canvas_result.image_data is not None:
     img = canvas_result.image_data
 
-    st.image(img, caption="Your Drawing", use_container_width=False)
-
     if st.button("Classify Drawing"):
         # Convert to grayscale, resize to match model input
         img_array = np.array(img)
