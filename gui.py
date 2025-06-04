@@ -65,14 +65,5 @@ if canvas_result.image_data is not None:
             result = main.letters_list[predicted_index]
             st.write(f"Classification Result: {result}")
 
-        '''if algorithm == "Perceptron":
-            #to be written
-            print()
-        elif algorithm == "Widrow-Hoff":
-            model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
-            model.train()
-            result = model.predict(flattened)
-
-            st.write(f"Classification Result:{result}")'''
 
     
