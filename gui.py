@@ -64,6 +64,3 @@ if canvas_result.image_data is not None:
             predicted_index = np.argmax(output)
             result = main.letters_list[predicted_index]
             st.write(f"Classification Result: {result}")
-
-
-    
