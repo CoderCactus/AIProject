@@ -1,0 +1,17 @@
+{
+    "name": "Python Dev Environment",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "settings": {
+      "python.pythonPath": "/usr/local/bin/python",
+      "terminal.integrated.defaultProfile.linux": "bash"
+    },
+    "extensions": [
+      "ms-python.python",
+      "gruntfuggly.todo-tree",
+      "ms-vsliveshare.vsliveshare"
+    ],
+    "features": { "ghcr.io/devcontainers/features/desktop-lite:1": {}},
+    "forwardPorts": [],
+    "postCreateCommand": "pip install -r requirements.txt || true",
+    "remoteUser": "vscode"
+  }
