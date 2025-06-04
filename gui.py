@@ -3,23 +3,7 @@ import numpy as np
 from streamlit_drawable_canvas import st_canvas
 from PIL import Image
 import cv2
-
-# Placeholder training functions
-def train_perceptron(X, y, learning_rate, epochs=100):
-    weights = np.zeros(X.shape[1])
-    for _ in range(epochs):
-        for xi, target in zip(X, y):
-            prediction = np.where(np.dot(xi, weights) >= 0.0, 1, -1)
-            weights += learning_rate * (target - prediction) * xi
-    return weights
-
-def train_widrow_hoff(X, y, learning_rate, epochs=100):
-    weights = np.zeros(X.shape[1])
-    for _ in range(epochs):
-        for xi, target in zip(X, y):
-            output = np.dot(xi, weights)
-            weights += learning_rate * (target - output) * xi
-    return weights
+import main
 
 def classify(weights, input_vec):
     result = np.dot(input_vec, weights)
@@ -53,8 +37,17 @@ if canvas_result.image_data is not None:
         # Convert to grayscale, resize to match model input
         img_array = np.array(img)
         gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
-        resized = cv2.resize(gray, (10, 10))  # adjust to your model's expected size
+        resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
         flattened = resized.flatten() / 255.0  # normalize
 
-        result = classify(weights, flattened)
-        st.write(f"Classification result: {result}")
+        if algorithm == "Perceptron":
+            #to be written
+            print()
+        elif algorithm == "Widrow-Hoff":
+            model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
+            model.train()
+            result = model.predict(flattened)
+
+    st.write(f"Classification Result:{result}")
+
+    
