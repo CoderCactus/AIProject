@@ -33,38 +33,12 @@ algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff
 learning_rate = st.sidebar.slider("Learning Rate (α)", 0.01, 1.0, 0.1, step=0.01)
 epochs = st.sidebar.slider("Training Epochs", 10, 500, 100, step=10)
 
-st.header("Training Data")
-uploaded_data = st.file_uploader("Upload CSV with Features & Labels", type="csv")
-
-if uploaded_data:
-    import pandas as pd
-    data = pd.read_csv(uploaded_data)
-    st.write(data.head())
-
-    X = data.iloc[:, :-1].values
-    y = data.iloc[:, -1].values
-
-    st.success("Training started...")
-    if algorithm == "Perceptron":
-        weights = train_perceptron(X, y, learning_rate, epochs)
-    else:
-        weights = train_widrow_hoff(X, y, learning_rate, epochs)
-
-    st.success(f"Training complete! Weights: {weights}")
-
-    st.header("Test a Character")
-    input_vec = st.text_input("Enter character vector (comma-separated)", "1,0,1,1")
-    if st.button("Classify"):
-        vec = np.array([float(i) for i in input_vec.split(',')])
-        result = classify(weights, vec)
-        st.write(f"Classification result: {result}")
-
 st.header("Draw a Character")
 
 canvas_result = st_canvas(
     fill_color="white",  # Background color
     stroke_width=10,
-    stroke_color="black",
+    stroke_color="orange",
     background_color="white",
     height=280,
     width=280,
