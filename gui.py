@@ -30,17 +30,35 @@ canvas_result = st_canvas(
     key="canvas",
 )
 
+if st.button("Train Model"):
+    if algorithm == "Perceptron":
+        #to be written
+        print()
+    elif algorithm == "Widrow-Hoff":
+        model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
+        model.train()
+        st.session_state.model = model
+
+
 if canvas_result.image_data is not None:
     img = canvas_result.image_data
 
     if st.button("Classify Drawing"):
-        # Convert to grayscale, resize to match model input
-        img_array = np.array(img)
-        gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
-        resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
-        flattened = resized.flatten() / 255.0  # normalize
+        if "model" not in st.session_state:
+            st.warning("Train the model first.")
+        else:
+            # Convert to grayscale, resize to match model input
+            img_array = np.array(img)
+            gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
+            resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
+            flattened = resized.flatten() / 255.0  # normalize
 
-        if algorithm == "Perceptron":
+            model = st.session_state.model
+            result = model.predict(flattened)
+            predicted_index = np.argmax(result)
+            st.write(f"Classification Result: {predicted_index} (Output: {np.round(result, 2)})")
+
+        '''if algorithm == "Perceptron":
             #to be written
             print()
         elif algorithm == "Widrow-Hoff":
@@ -48,6 +66,6 @@ if canvas_result.image_data is not None:
             model.train()
             result = model.predict(flattened)
 
-    st.write(f"Classification Result:{result}")
+            st.write(f"Classification Result:{result}")'''
 
     
