@@ -3,35 +3,35 @@ import numpy as np
 from streamlit_drawable_canvas import st_canvas
 from PIL import Image
 import cv2
-
-# Placeholder training functions
-def train_perceptron(X, y, learning_rate, epochs=100):
-    weights = np.zeros(X.shape[1])
-    for _ in range(epochs):
-        for xi, target in zip(X, y):
-            prediction = np.where(np.dot(xi, weights) >= 0.0, 1, -1)
-            weights += learning_rate * (target - prediction) * xi
-    return weights
-
-def train_widrow_hoff(X, y, learning_rate, epochs=100):
-    weights = np.zeros(X.shape[1])
-    for _ in range(epochs):
-        for xi, target in zip(X, y):
-            output = np.dot(xi, weights)
-            weights += learning_rate * (target - output) * xi
-    return weights
+import main
 
 def classify(weights, input_vec):
     result = np.dot(input_vec, weights)
     return 1 if result >= 0 else -1
 
 # Streamlit UI
-st.title("Character Classifier using ANN")
+st.title("Character Classifier")
 st.sidebar.header("Configuration")
 
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"])
-learning_rate = st.sidebar.slider("Learning Rate (α)", 0.01, 1.0, 0.1, step=0.01)
-epochs = st.sidebar.slider("Training Epochs", 10, 500, 100, step=10)
+learning_rate = st.sidebar.slider(
+    "Training Epochs",
+    min_value=0.000001,
+    max_value=0.01,
+    value=0.00001,      # Default value shown on the slider
+    step=0.0001,      # Smallest increment
+    format="%.6f"      # Display with 5 decimal places
+)
+epochs = st.sidebar.slider("Training Epochs", 5000, 100000, 20000, step=1000)
+
+if st.button("Train Model"):
+    if algorithm == "Perceptron":
+        #to be written
+        print()
+    elif algorithm == "Widrow-Hoff":
+        model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
+        model.train()
+        st.session_state.model = model
 
 st.header("Draw a Character")
 
@@ -50,11 +50,20 @@ if canvas_result.image_data is not None:
     img = canvas_result.image_data
 
     if st.button("Classify Drawing"):
-        # Convert to grayscale, resize to match model input
-        img_array = np.array(img)
-        gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
-        resized = cv2.resize(gray, (10, 10))  # adjust to your model's expected size
-        flattened = resized.flatten() / 255.0  # normalize
+        if "model" not in st.session_state:
+            st.warning("Train the model first.")
+        else:
+            # Convert to grayscale, resize to match model input
+            img_array = np.array(img)
+            gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
+            resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
+            flattened = resized.flatten() / 255.0  # normalize
 
-        result = classify(weights, flattened)
-        st.write(f"Classification result: {result}")
+            model = st.session_state.model
+            output = model.predict(flattened)
+            predicted_index = np.argmax(output)
+            result = main.letters_list[predicted_index]
+            st.write(f"Classification Result: {result}")
+
+
+    
