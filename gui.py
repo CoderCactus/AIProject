@@ -37,7 +37,7 @@ st.header("Draw a Character")
 canvas_result = st_canvas(
     fill_color="white",  # Background color
     stroke_width=10,
-    stroke_color="orange",
+    stroke_color="pink",
     background_color="white",
     height=280,
     width=280,
@@ -62,4 +62,6 @@ if canvas_result.image_data is not None:
             output = model.predict(flattened)
             predicted_index = np.argmax(output)
             result = main.letters_list[predicted_index]
-            st.write(f"Classification Result: {result}")
+            st.snow()
+            st.info(f"Classification Result: {result}")
+
