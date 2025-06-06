@@ -28,9 +28,9 @@ if st.sidebar.button("Load Saved Model"):
     try:
         model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz", main.X, main.T)
         st.session_state.model = model
-        st.success("✅ Model loaded from disk")
+        st.success("Model loaded from disk")
     except FileNotFoundError:
-        st.error("❌ No saved model found")
+        st.error("No saved model found")
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
