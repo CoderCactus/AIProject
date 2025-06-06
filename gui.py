@@ -26,7 +26,7 @@ epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
 
 if st.sidebar.button("Load Saved Model"):
     try:
-        model = main.WidrowHoff.load(f"model_{algorithm}_lr{learning_rate}_ep{epochs}.npz", main.X, main.T)
+        model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz", main.X, main.T)
         st.session_state.model = model
         st.success("✅ Model loaded from disk")
     except FileNotFoundError:
@@ -43,7 +43,7 @@ if st.button("Train Model"):
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
         model.train()
         st.session_state.model = model
-        model.save(f"model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
+        model.save(f"Model/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
 
 st.header("Draw a Character")
 
