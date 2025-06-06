@@ -1,5 +1,6 @@
 import numpy as np
 import streamlit as st
+import os
 
 # === Load the dataset ===
 print("Loading dataset...")
@@ -47,6 +48,23 @@ class WidrowHoff:
 
         st.info("\nTraining complete!")
 
+    def save(self, filename="model.npz"):
+        np.savez(filename,
+                 weights=self.weights,
+                 learning_rate=self.lr,
+                 epochs=self.epochs,
+                 input_size=self.input_size,
+                 output_size=self.output_size)
+        print(f"✅ Model saved to {filename}")
+
+    @classmethod
+    def load(cls, filename, X, T):
+        data = np.load(filename)
+        model = cls(X, T, data['learning_rate'], int(data['epochs']))
+        model.weights = data['weights']
+        print(f"✅ Model loaded from {filename}")
+        return model
+
     def predict(self, input_vector):
         input_with_bias = np.append(input_vector, 1.0)
         return np.dot(input_with_bias, self.weights)
@@ -91,3 +109,4 @@ def evaluate_model(model, X, T, letters_list):
 
 # Run a test
 #test_example(8)
+
