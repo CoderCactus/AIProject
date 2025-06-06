@@ -1,5 +1,6 @@
 import numpy as np
 import streamlit as st
+import pandas as pd
 
 # === Load the dataset ===
 print("Loading dataset...")
@@ -68,6 +69,7 @@ def test_example(index=0):
     print(f"Actual Letter:    {target_letter}")
     print(f"Predicted Letter: {predicted_letter}")
     print(f"Output Vector:    {np.round(output, 3)}")
+    
 
     evaluate_model(model, X, T, letters_list)
 
