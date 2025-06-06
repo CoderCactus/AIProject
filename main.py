@@ -3,7 +3,7 @@ import streamlit as st
 
 # === Load the dataset ===
 print("Loading dataset...")
-data = np.load('synthetic_letter_dataset_20x20_50each.npz')
+data = np.load('TrainingSets/synthetic_letter_dataset_20x20_50each.npz')
 X = data['inputs'] / 255.0    # Normalize pixel values
 T = data['targets']
 letters_list = data['letters']
