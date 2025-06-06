@@ -1,4 +1,4 @@
-# perceptron.py
+#perceptron.py
 
 import numpy as np  # Import NumPy for numerical operations
 
