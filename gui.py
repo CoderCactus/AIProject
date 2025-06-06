@@ -43,7 +43,6 @@ if st.button("Train Model"):
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
         model.train()
         st.session_state.model = model
-        model.save(f"Model/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
 
 st.header("Draw a Character")
 
@@ -91,3 +90,10 @@ if "last_output" in st.session_state:
             
 
 
+if st.sidebar.button("Save Model"):
+    if "model" in st.session_state:
+        filename = f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz"
+        st.session_state.model.save(filename)
+        st.success(f"Model saved at {filename}")
+    else:
+        st.warning("No model in memory to save.")
