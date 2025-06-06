@@ -1,4 +1,5 @@
 import numpy as np
+import streamlit as st
 
 # === Load the dataset ===
 print("Loading dataset...")
@@ -42,9 +43,9 @@ class WidrowHoff:
                 self.weights += self.lr * np.outer(x, error)
 
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
-                print(f"Epoch {epoch}/{self.epochs} complete")
+                st.info(f"Epoch {epoch}/{self.epochs} complete")
 
-        print("\nTraining complete!")
+        st.info("\nTraining complete!")
 
     def predict(self, input_vector):
         input_with_bias = np.append(input_vector, 1.0)
