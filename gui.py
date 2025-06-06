@@ -49,7 +49,7 @@ st.header("Draw a Character")
 
 canvas_result = st_canvas(
     fill_color="white",  # Background color
-    stroke_width=10,
+    stroke_width=20,
     stroke_color="white",
     background_color="black",
     height=280,
