@@ -3,6 +3,7 @@ import numpy as np
 from streamlit_drawable_canvas import st_canvas
 import cv2
 import main
+import pandas as pd
 
 def classify(weights, input_vec):
     result = np.dot(input_vec, weights)
@@ -71,6 +72,19 @@ if canvas_result.image_data is not None:
             output = model.predict(flattened)
             predicted_index = np.argmax(output)
             result = main.letters_list[predicted_index]
-            st.snow()
+
+            st.session_state["last_output"] = output
+
             st.info(f"Classification Result: {result}")
+
+if "last_output" in st.session_state:
+    if st.button("Output Vector"):
+        st.snow()
+        out = pd.DataFrame(
+            [np.round(st.session_state.last_output, 3)],
+            columns=main.letters_list
+        )
+        st.dataframe(out)
+            
+
 
