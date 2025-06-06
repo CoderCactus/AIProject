@@ -99,7 +99,7 @@ class WidrowHoff:
         return np.dot(input_with_bias, self.weights)
 
 
-# === Test prediction ===
+# Test prediction 
 def test_example(index=0):
     print(f"\n=== Running Test Example: Index {index} ===")
     model = WidrowHoff(X, T, learning_rate=0.005, epochs=20000)
