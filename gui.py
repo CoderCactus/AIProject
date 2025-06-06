@@ -20,7 +20,7 @@ learning_rate = st.sidebar.slider(
     max_value=0.01,
     value=0.005,      # Default value shown on the slider
     step=0.001,      # Smallest increment
-    format="%.4f"      # Display with 5 decimal places
+    format="%.3f"      # Display with 5 decimal places
 )
 epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
 
@@ -34,7 +34,10 @@ if st.sidebar.button("Load Saved Model"):
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
-        #to be written
+        model = main.Perceptron(400, learning_rate, epochs)
+        model.train(main.X_train, main.y_train)
+        st.session_state.model = model
+        model.save(f"model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
         print()
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs)
