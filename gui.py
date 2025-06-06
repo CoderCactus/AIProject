@@ -14,14 +14,14 @@ st.sidebar.header("Configuration")
 
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"])
 learning_rate = st.sidebar.slider(
-    "Training Epochs",
+    "Learning rate",
     min_value=0.001,
     max_value=0.01,
     value=0.005,      # Default value shown on the slider
     step=0.001,      # Smallest increment
     format="%.4f"      # Display with 5 decimal places
 )
-epochs = st.sidebar.slider("Training Epochs", 5000, 100000, 20000, step=1000)
+epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
