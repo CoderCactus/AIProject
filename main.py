@@ -2,7 +2,7 @@ import numpy as np
 
 # === Load the dataset ===
 print("Loading dataset...")
-data = np.load('synthetic_letter_dataset_20x20_100each.npz')
+data = np.load('synthetic_letter_dataset_20x20_50each.npz')
 X = data['inputs'] / 255.0    # Normalize pixel values
 T = data['targets']
 letters_list = data['letters']
@@ -54,7 +54,7 @@ class WidrowHoff:
 # === Test prediction ===
 def test_example(index=0):
     print(f"\n=== Running Test Example: Index {index} ===")
-    model = WidrowHoff(X, T, learning_rate=0.001, epochs=5000)
+    model = WidrowHoff(X, T, learning_rate=0.005, epochs=20000)
     model.train()
 
     test_input = X[index]
@@ -81,7 +81,7 @@ def evaluate_model(model, X, T, letters_list):
         actual_index = np.argmax(T[i])
         if predicted_index == actual_index:
             correct += 1
-        if i % 1000 == 0 and i != 0:
+        if i % 100 == 0 and i != 0:
             print(f"Evaluated {i} samples...")
 
     accuracy = correct / total
@@ -89,4 +89,4 @@ def evaluate_model(model, X, T, letters_list):
 
 
 # Run a test
-test_example(8)
+#test_example(8)
