@@ -73,6 +73,7 @@ class WidrowHoff:
                 self.weights += self.lr * np.outer(x, error)
 
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
+                self.lr *= 0.95
                 st.info(f"Epoch {epoch}/{self.epochs} complete")
 
         st.info("\nTraining complete!")
@@ -139,4 +140,4 @@ def evaluate_model(model, X, T, letters_list):
 
 # Run a test
 #test_example(8)
-#
+
