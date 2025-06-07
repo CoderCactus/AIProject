@@ -1,45 +1,84 @@
-#perceptron.py
+# perceptron.py
 
 import numpy as np  # Import NumPy for numerical operations
 
+# Define the activation function: returns 1 if input > 0, else returns 0
+def unit_step_func(x):
+    return np.where(x > 0, 1, 0)
+
+# Define the Perceptron class
 class Perceptron:
-    def __init__(self, input_size, learning_rate=0.1, epochs=100):
+    def __init__(self, learning_rate=0.01, n_iters=1000):
         """
         Initializes the perceptron model with:
-        - input_size: number of features
-        - learning_rate: how much weights are updated
-        - epochs: how many times to iterate over the dataset
+        - learning_rate: how much to update weights during training
+        - n_iters: how many times to iterate over the training data
         """
-        self.weights = np.zeros(input_size)  # Initialize weights to 0
-        self.bias = 0.0                      # Initialize bias to 0
-        self.lr = learning_rate              # Store learning rate
-        self.epochs = epochs                 # Store number of training epochs
+        self.lr = learning_rate                # Store learning rate
+        self.n_iters = n_iters                 # Store number of iterations
+        self.weights = None                    # Will be initialized during training
+        self.bias = None                       # Will also be initialized during training
+        self.activation_func = unit_step_func  # Use the unit step function for activation
 
-    def activation(self, x):
+    # Fit the model to the training data
+    def fit(self, X, y):
         """
-        Activation function (step function)
-        Returns 1 if input is >= 0, else 0
+        Trains the perceptron using the Perceptron learning rule.
+        Parameters:
+        - X: input features, shape (n_samples, n_features)
+        - y: target labels (binary, e.g. 0 or 1)
         """
-        return 1 if x >= 0 else 0
+        n_samples, n_features = X.shape
 
+        # Initialize weights and bias
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+        # Convert all y values to 0 or 1 (in case they are -1 or other values)
+        y_ = np.where(y > 0, 1, 0)
+
+        # Training loop
+        for _ in range(self.n_iters):
+            for idx, x_i in enumerate(X):
+                # Calculate the linear output: dot product of weights and inputs + bias
+                linear_output = np.dot(x_i, self.weights) + self.bias
+                # Apply the activation function (step function)
+                y_predicted = self.activation_func(linear_output)
+
+                # Update rule: adjust weights and bias if prediction is wrong
+                update = self.lr * (y_[idx] - y_predicted)
+                self.weights += update * x_i
+                self.bias += update
+
+    # Predict the output class for new input data
     def predict(self, x):
         """
-        Predicts the output (0 or 1) for a single input vector `x`
+        Predicts the binary output for input `x`.
         """
-        linear_output = np.dot(self.weights, x) + self.bias  # Weighted sum
-        return self.activation(linear_output)                # Apply step function
+        linear_output = np.dot(self.weights, x) + self.bias
+        return self.activation_func(linear_output)
 
-    def train(self, X_train, y_train):
-        """
-        Trains the perceptron using the Perceptron learning rule
-        - X_train: matrix of input samples
-        - y_train: expected outputs
-        """
-        for epoch in range(self.epochs):  # Repeat for each epoch
-            for x, y in zip(X_train, y_train):  # Loop through each training sample
-                y_pred = self.predict(x)        # Predict output
-                error = y - y_pred              # Calculate the error
-                # Update weights and bias using Perceptron rule
-                self.weights += self.lr * error * x
-                self.bias += self.lr * error
+# If this script is run directly, do a simple test
+if __name__ == "__main__":
+    # Imports for testing the Perceptron
+    import matplotlib.pyplot as plt  # Corrected typo in import
+    from sklearn.model_selection import train_test_split
+    from sklearn import datasets
+
+    # Load a binary classification dataset
+    X, y = datasets.make_blobs(n_samples=150, n_features=2, centers=2, cluster_std=1.05, random_state=2)
+
+    # Split dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
+
+    # Create a perceptron instance and train it
+    p = Perceptron(learning_rate=0.01, n_iters=1000)
+    p.fit(X_train, y_train)
+
+    # Predict on the test set
+    predictions = [p.predict(x) for x in X_test]
+
+    # (Optional) Visualization of decision boundary
+    # Plotting code can be added here if needed
+
 
