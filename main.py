@@ -29,7 +29,7 @@ class Perceptron:
         """
         self.lr = learning_rate                # Store learning rate
         self.n_iters = n_iters                 # Store number of iterations
-        self.weights = 0                    # Will be initialized during training
+        self.weights = None                   # Will be initialized during training
         self.bias = 0                     # Will also be initialized during training
         self.activation_func = unit_step_func  # Use the unit step function for activation
 
@@ -48,6 +48,7 @@ class Perceptron:
         # Training loop
         for _ in range(self.n_iters):
             for idx, x_i in enumerate(X):
+                x_i = x_i.flatten()
                 # Calculate the linear output: dot product of weights and inputs + bias
                 linear_output = np.dot(x_i, self.weights) + self.bias
                 # Apply the activation function (step function)
@@ -61,9 +62,36 @@ class Perceptron:
     # Predict the output class for new input data
     def predict(self, x):
         """
-        Predicts the binary output for input `x`.
+        Predicts the binary output for input x.
         """
         linear_output = np.dot(self.weights, x) + self.bias
+
+class MultiClassPerceptron:
+    def __init__(self, n_classes, learning_rate=0.01, n_iters=1000):
+        self.n_classes = n_classes
+        self.models = [
+            Perceptron(learning_rate=learning_rate, n_iters=n_iters)
+            for _ in range(n_classes)
+        ]
+
+    def fit(self, X, T_onehot):
+        for i in range(self.n_classes):
+            binary_targets = T_onehot[:, i]
+            self.models[i].fit(X, binary_targets)
+
+    def predict(self, X):
+        # Get linear outputs from all perceptrons
+        scores = np.array([
+            np.dot(X, model.weights) + model.bias
+            for model in self.models
+        ]).T  # shape: (n_samples, n_classes)
+
+        # Choose class with highest score
+        class_indices = np.argmax(scores, axis=1)
+        one_hot_output = np.zeros((X.shape[0], self.n_classes))
+        one_hot_output[np.arange(X.shape[0]), class_indices] = 1
+        return one_hot_output
+
 
 class WidrowHoff:
     def __init__(self, X, T, learning_rate, epochs, variable):
@@ -158,3 +186,14 @@ def evaluate_model(model, X, T, letters_list):
 # Run a test
 #test_example(8)
 #
+
+n_classes = T.shape[1]
+model = MultiClassPerceptron(n_classes, learning_rate=0.01, n_iters=500)
+model.fit(X, T)
+
+# Predict a single example
+pred = model.predict(X[0:1])  # returns one-hot
+predicted_letter = letters_list[np.argmax(pred)]
+actual_letter = letters_list[np.argmax(T[0])]
+
+print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
