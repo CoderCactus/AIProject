@@ -139,4 +139,4 @@ def evaluate_model(model, X, T, letters_list):
 
 # Run a test
 #test_example(8)
-#
+
