@@ -32,11 +32,11 @@ def _add_noise(mat, level):
     Randomly flips a percentage of pixels in a binary matrix.
 
     Parameters:
-    - mat: 2D NumPy array with values 0 or 1
-    - level: float - fraction of pixels to flip
+    mat: 2D NumPy array with values 0 or 1
+    level: float - fraction of pixels to flip
 
     Returns:
-    - Noisy binary matrix
+    -Noisy binary matrix
     """
     noisy = mat.copy()
     total = mat.size
