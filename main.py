@@ -53,7 +53,7 @@ class Perceptron:
                 self.bias += self.lr * error
 
 class WidrowHoff:
-    def __init__(self, X, T, learning_rate, epochs):
+    def __init__(self, X, T, learning_rate, epochs, variable):
         self.lr = learning_rate
         self.epochs = epochs
         self.X = np.hstack([X, np.ones((X.shape[0], 1))])  # Add bias
@@ -61,6 +61,7 @@ class WidrowHoff:
         self.input_size = self.X.shape[1]
         self.output_size = T.shape[1]
         self.weights = np.random.uniform(-0.01, 0.01, size=(self.input_size, self.output_size))
+        self.variable = variable
         print(f"Initialized Widrow-Hoff model with learning rate {self.lr}, epochs {self.epochs}")
         print(f"Input size: {self.input_size}, Output size: {self.output_size}")
 
@@ -73,7 +74,10 @@ class WidrowHoff:
                 self.weights += self.lr * np.outer(x, error)
 
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
-                self.lr *= 0.95
+
+                if self.variable:
+                    self.lr *= 0.95
+
                 st.info(f"Epoch {epoch}/{self.epochs} complete")
 
         st.info("\nTraining complete!")
@@ -88,9 +92,9 @@ class WidrowHoff:
         print(f"Model saved to {filename}")
 
     @classmethod
-    def load(cls, filename, X, T):
+    def load(cls, filename, X, T, variable):
         data = np.load(filename)
-        model = cls(X, T, data['learning_rate'], int(data['epochs']))
+        model = cls(X, T, data['learning_rate'], int(data['epochs'], data['variable']))
         model.weights = data['weights']
         print(f"Model loaded from {filename}")
         return model
