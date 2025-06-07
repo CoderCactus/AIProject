@@ -52,17 +52,10 @@ class Perceptron:
         linear_output = np.dot(self.weights, x) + self.bias  # Weighted sum
         return self.activation_func(linear_output)                # Apply step function
 
-    def train(self, X_train, y_train):
-        """
-        Trains the perceptron using the Perceptron learning rule
-        - X_train: matrix of input samples
-        - y_train: expected outputs
-        """
-        for epoch in range(self.epochs):  # Repeat for each epoch
-            for x, y in zip(X_train, y_train):  # Loop through each training sample
-                y_pred = self.predict(x)        # Predict output
-                error = y - y_pred              # Calculate the error
-                # Update weights and bias using Perceptron rule
-                self.weights += self.lr * error * x
-                self.bias += self.lr * error
+#Testing
+if name=="__main__":
+    #Impots
+    import matplot.python as plt
+    from sklearn.model_selection import train_test_split
+    from sklearn import datasets
 
