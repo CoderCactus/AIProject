@@ -46,7 +46,7 @@ class Perceptron:
         T_ = np.where(T > 0, 1, 0)
 
         # Training loop
-        for _ in range(self.n_iters):
+        for epoch in range(self.n_iters):
             for idx, x_i in enumerate(X):
                 x_i = x_i.flatten()
                 # Calculate the linear output: dot product of weights and inputs + bias
@@ -80,17 +80,14 @@ class MultiClassPerceptron:
             self.models[i].fit(X, binary_targets)
 
     def predict(self, X):
-        # Get linear outputs from all perceptrons
+        # Get raw activation scores from each Perceptron
         scores = np.array([
             np.dot(X, model.weights) + model.bias
             for model in self.models
-        ]).T  # shape: (n_samples, n_classes)
+        ]).T  # Shape: (n_samples, n_classes)
 
-        # Choose class with highest score
-        class_indices = np.argmax(scores, axis=1)
-        one_hot_output = np.zeros((X.shape[0], self.n_classes))
-        one_hot_output[np.arange(X.shape[0]), class_indices] = 1
-        return one_hot_output
+        return scores  # Just the raw output vector
+
 
 
 class WidrowHoff:
@@ -186,14 +183,14 @@ def evaluate_model(model, X, T, letters_list):
 # Run a test
 #test_example(8)
 #
+def testperceptron(n):
+    n_classes = T.shape[1]
+    model = MultiClassPerceptron(n_classes, learning_rate=0.01, n_iters=500)
+    model.fit(X, T)
 
-n_classes = T.shape[1]
-model = MultiClassPerceptron(n_classes, learning_rate=0.01, n_iters=500)
-model.fit(X, T)
+    # Predict a single example
+    pred = model.predict(X[n])  # returns one-hot
+    predicted_letter = letters_list[np.argmax(pred)]
+    actual_letter = letters_list[np.argmax(T[n])]
 
-# Predict a single example
-pred = model.predict(X[0:1])  # returns one-hot
-predicted_letter = letters_list[np.argmax(pred)]
-actual_letter = letters_list[np.argmax(T[0])]
-
-print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
+    print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")

@@ -43,9 +43,9 @@ if st.sidebar.button("Load Saved Model"):
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
-        model = main.Perceptron(400, learning_rate, epochs)
-        model.train(main.X_train, main.y_train)
-        st.session_state.model = model
+        n_classes = main.T.shape[1]
+        model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
+        model.fit(main.X, main.T)
         model.save(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
         print()
     elif algorithm == "Widrow-Hoff":
