@@ -4,7 +4,7 @@ from streamlit_drawable_canvas import st_canvas
 import cv2
 import main
 import pandas as pd
-from preprocessing import canvas_to_input_vector
+
 
 def classify(weights, input_vec):
     result = np.dot(input_vec, weights)
