@@ -41,8 +41,6 @@ if st.button("Train Model"):
         n_classes = main.T.shape[1]
         model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
         model.fit(main.X, main.T)
-        model.save(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
-        print()
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs, variable)
         model.train()
