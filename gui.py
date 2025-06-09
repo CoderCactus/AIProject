@@ -4,7 +4,7 @@ from streamlit_drawable_canvas import st_canvas
 import cv2
 import main
 import pandas as pd
-from preprocessing import canvas_to_input_vector
+
 
 def classify(weights, input_vec):
     result = np.dot(input_vec, weights)
@@ -28,11 +28,6 @@ variable = st.sidebar.toggle('Variable Learning Rate')
 
 epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
 
-# Noise Optins
-st.sidebar.subheader("input options")
-add_noise = st.sidebar.checkbox("add noise", value = False)
-noise_lvl = st.sidebar.slider ("noise level", 0.0, 0.3, 0.05, 0.01)
-
 if st.sidebar.button("Load Saved Model"):
     try:
         model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz", main.X, main.T, variable)
@@ -43,11 +38,9 @@ if st.sidebar.button("Load Saved Model"):
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
-        model = main.Perceptron(400, learning_rate, epochs)
-        model.train(main.X_train, main.y_train)
-        st.session_state.model = model
-        model.save(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz")
-        print()
+        n_classes = main.T.shape[1]
+        model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
+        model.fit(main.X, main.T)
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs, variable)
         model.train()
