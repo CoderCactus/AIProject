@@ -28,11 +28,6 @@ variable = st.sidebar.toggle('Variable Learning Rate')
 
 epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
 
-# Noise Optins
-st.sidebar.subheader("input options")
-add_noise = st.sidebar.checkbox("add noise", value = False)
-noise_lvl = st.sidebar.slider ("noise level", 0.0, 0.3, 0.05, 0.01)
-
 if st.sidebar.button("Load Saved Model"):
     try:
         model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz", main.X, main.T, variable)
