@@ -47,7 +47,6 @@ class Perceptron:
         # Training loop
         for epoch in range(self.epochs):
             for idx, x_i in enumerate(X):
-                x_i = x_i.flatten()
                 # Calculate the linear output: dot product of weights and inputs + bias
                 linear_output = np.dot(x_i, self.weights) + self.bias
                 # Apply the activation function (step function)
@@ -70,7 +69,8 @@ class Perceptron:
         """
         linear_output = np.dot(self.weights, x) + self.bias
 
-        return linear_output
+        return self.activation_func(linear_output)
+
 
 class MultiClassPerceptron:
     def __init__(self, n_classes, learning_rate=0.01, epochs = 1000):
