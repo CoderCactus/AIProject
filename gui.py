@@ -84,7 +84,7 @@ if canvas_result.image_data is not None:
 
 if "last_output" in st.session_state:
     if st.button("Output Vector"):
-        st.snow()
+        #st.snow()
         out = pd.DataFrame(
             [np.round(st.session_state.last_output, 3)],
             columns=main.letters_list
