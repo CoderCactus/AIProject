@@ -16,29 +16,27 @@ print(f"Dataset loaded. Total samples: {X.shape[0]}, Input size: {X.shape[1]}, N
 
 # Define the Perceptron class
 class Perceptron:
-    def __init__(self, learning_rate=0.01, epochs=1000):
+    def __init__(self, X, T, learning_rate=0.01, epochs=1000):
         """
         Initializes the perceptron model with:
         - learning_rate: how much to update weights during training
         - epochs: how many times to iterate over the training data
         """
+        self.X = X
+        self.T = T
+        n_features = X.shape[1]
+        self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
         self.lr = learning_rate                # Store learning rate
         self.epochs = epochs                 # Store number of iterations
-        self.weights = None                   # Will be initialized during training
         self.bias = 0                     # Will also be initialized during training
-        self.activation_func = np.where(x > 0, 1, 0)  # Use the unit step function for activation
+        self.activation_func = np.where(X > 0, 1, 0)  # Use the unit step function for activation
 
 
     # Fit the model to the training data
-    def fit(self, X, T):
-
-        n_features = X.shape[1]
-        # Initialize weights and bias
-        self.weights = self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
-        self.bias = 0
+    def fit(self):
 
         # Convert all y values to 0 or 1 (in case they are -1 or other values)
-        T_ = np.where(T > 0, 1, 0)
+        T_ = np.where(self.T > 0, 1, 0)
 
         # Training loop
         for epoch in range(self.epochs):
@@ -203,8 +201,8 @@ def test_multiperceptron(n):
 
 def test_perceptron(n):
     n_classes = T.shape[1]
-    model = Perceptron(learning_rate=0.01, epochs=500)
-    model.fit(X, T)
+    model = Perceptron(X, T, learning_rate=0.01, epochs=500)
+    model.fit()
 
     # Predict a single example
     pred = model.predict(X[n])  # returns one-hot
