@@ -129,13 +129,14 @@ class WidrowHoff:
                  learning_rate=self.lr,
                  epochs=self.epochs,
                  input_size=self.input_size,
-                 output_size=self.output_size)
+                 output_size=self.output_size,
+                 variable=self.variable)
         print(f"Model saved to {filename}")
 
     @classmethod
     def load(cls, filename, X, T, variable):
         data = np.load(filename)
-        model = cls(X, T, data['learning_rate'], int(data['epochs'], data['variable']))
+        model = cls(X, T, data['learning_rate'], int(data['epochs']), data['variable'])
         model.weights = data['weights']
         print(f"Model loaded from {filename}")
         return model

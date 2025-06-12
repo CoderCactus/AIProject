@@ -92,7 +92,7 @@ if "last_output" in st.session_state:
             
 if st.sidebar.button("Save Model"):
     if "model" in st.session_state:
-        filename = f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}.npz"
+        filename = f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz"
         st.session_state.model.save(filename)
         st.success(f"Model saved at {filename}")
     else:
