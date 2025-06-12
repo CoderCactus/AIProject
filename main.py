@@ -188,7 +188,7 @@ def evaluate_model(model, X, T, letters_list):
 # Run a test
 #test_example(8)
 #
-def testperceptron(n):
+def test_multiperceptron(n):
     n_classes = T.shape[1]
     model = MultiClassPerceptron(n_classes, learning_rate=0.01, epochs=500)
     model.fit(X, T)
@@ -199,3 +199,19 @@ def testperceptron(n):
     actual_letter = letters_list[np.argmax(T[n])]
 
     print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
+
+#test_multiperceptron()
+
+def test_perceptron(n):
+    n_classes = T.shape[1]
+    model = Perceptron(learning_rate=0.01, epochs=500)
+    model.fit(X, T)
+
+    # Predict a single example
+    pred = model.predict(X[n])  # returns one-hot
+    predicted_letter = letters_list[np.argmax(pred)]
+    actual_letter = letters_list[np.argmax(T[n])]
+
+    print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
+
+test_perceptron(0)
