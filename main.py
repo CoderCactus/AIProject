@@ -73,23 +73,50 @@ class Perceptron:
 
 
 class MultiClassPerceptron:
-    def __init__(self, n_classes, n_features, learning_rate=0.01, epochs=1000):
+    def __init__(self, n_classes, learning_rate=0.01, epochs=1000):
         self.n_classes = n_classes
-        self.models = [
-            Perceptron(n_features, learning_rate, epochs) for _ in range(n_classes)
-        ]
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+        self.models = []  # Each element will be a Perceptron instance
 
     def fit(self, X, T_onehot):
-        for i, model in enumerate(self.models):
-            st.info(f"Training class {i}")
-            binary_targets = T_onehot[:, i]
-            model.fit(X, binary_targets)
+        """
+        Train one Perceptron per class (letter), using one-vs-all strategy.
+        """
+        self.models = []  # Clear any previous models
+        for i in range(self.n_classes):
+            st.info(f"Training Perceptron for letter index {i}")
+            binary_targets = T_onehot[:, i]  # One-vs-all labels
+            perceptron = Perceptron(X, binary_targets, learning_rate=self.learning_rate, epochs=self.epochs)
+            perceptron.fit()
+            self.models.append(perceptron)
+
+    def save(self, filename="model.npz"):
+        np.savez(filename,
+                n_classes = self.n_classes,
+                learning_rate = self.learning_rate,
+                epochs = self.epochs,
+                models = self.models)
+        print(f"Model saved to {filename}")
+
+    @classmethod
+    def load(cls, filename, X, T, variable):
+        data = np.load(filename)
+        model = cls(X, T, data['n_classes'], data['learning_rate'], data['epochs'], data['models'])
+        print(f"Model loaded from {filename}")
+        return model
+
 
     def predict(self, X):
+        """
+        Predicts the letter index for each sample in X.
+        """
+        # Get decision score from each trained perceptron
         scores = np.array([
             np.dot(X, model.weights) + model.bias for model in self.models
         ]).T  # shape: (n_samples, n_classes)
-        return np.argmax(scores, axis=1)  # Predicted class labels
+
+        return np.argmax(scores, axis=1)  # Predicted letter index
 
 
 
