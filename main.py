@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np #Import NumPy for numerical operations
 import streamlit as st
 import pandas as pd
 import os
@@ -11,50 +11,50 @@ T = data['targets']
 letters_list = data['letters']
 print(f"Dataset loaded. Total samples: {X.shape[0]}, Input size: {X.shape[1]}, Number of classes: {T.shape[1]}\n")
 
-# perceptron.py
 
-import numpy as np  # Import NumPy for numerical operations
 
-# Define the activation function: returns 1 if input > 0, else returns 0
-def unit_step_func(x):
-    return np.where(x > 0, 1, 0)
 
 # Define the Perceptron class
 class Perceptron:
-    def __init__(self, learning_rate=0.01, epochs=1000):
+    def __init__(self, X, T, learning_rate=0.01, epochs=1000):
         """
         Initializes the perceptron model with:
         - learning_rate: how much to update weights during training
         - epochs: how many times to iterate over the training data
         """
+        self.X = X.flatten()
+        self.T = T.flatten()
+        n_features = X.shape[1]
+        self.bias = 0
+        self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
         self.lr = learning_rate                # Store learning rate
         self.epochs = epochs                 # Store number of iterations
-        self.weights = None                   # Will be initialized during training
-        self.bias = 0                     # Will also be initialized during training
-        self.activation_func = unit_step_func  # Use the unit step function for activation
+
+        assert X.shape[1] == self.weights.shape[0], "Mismatch in input feature size"
+
+
+    def activation_func(self, x):
+        return np.where(x > 0, 1, 0)
 
     # Fit the model to the training data
-    def fit(self, X, T):
-
-        n_features = X.shape[1]
-        # Initialize weights and bias
-        self.weights = self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
-        self.bias = 0
+    def fit(self):
 
         # Convert all y values to 0 or 1 (in case they are -1 or other values)
-        T_ = np.where(T > 0, 1, 0)
+        T_ = np.where(self.T > 0, 1, 0)
 
         # Training loop
         for epoch in range(self.epochs):
-            for idx, x_i in enumerate(X):
+            for x, t in zip(self.X, self.T):
                 # Calculate the linear output: dot product of weights and inputs + bias
-                linear_output = np.dot(x_i, self.weights) + self.bias
+                linear_output = np.dot(x, self.weights) + self.bias
                 # Apply the activation function (step function)
                 T_predicted = self.activation_func(linear_output)
 
                 # Update rule: adjust weights and bias if prediction is wrong
-                update = self.lr * (T_[idx] - T_predicted)
-                self.weights += update * x_i
+                update = (t - T_predicted)
+
+                self.weights += self.lr * update * x
+
                 self.bias += update
 
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
@@ -73,28 +73,23 @@ class Perceptron:
 
 
 class MultiClassPerceptron:
-    def __init__(self, n_classes, learning_rate=0.01, epochs = 1000):
+    def __init__(self, n_classes, n_features, learning_rate=0.01, epochs=1000):
         self.n_classes = n_classes
         self.models = [
-            Perceptron(learning_rate = learning_rate, epochs = epochs)
-            for _ in range(n_classes)
+            Perceptron(n_features, learning_rate, epochs) for _ in range(n_classes)
         ]
 
     def fit(self, X, T_onehot):
-        for i in range(self.n_classes):
+        for i, model in enumerate(self.models):
             st.info(f"Training class {i}")
             binary_targets = T_onehot[:, i]
-            self.models[i].fit(X, binary_targets)
-            
+            model.fit(X, binary_targets)
 
     def predict(self, X):
-        # Get raw activation scores from each Perceptron
         scores = np.array([
-            np.dot(X, model.weights) + model.bias
-            for model in self.models
-        ]).T  # Shape: (n_samples, n_classes)
-
-        return scores  # Just the raw output vector
+            np.dot(X, model.weights) + model.bias for model in self.models
+        ]).T  # shape: (n_samples, n_classes)
+        return np.argmax(scores, axis=1)  # Predicted class labels
 
 
 
@@ -191,7 +186,7 @@ def evaluate_model(model, X, T, letters_list):
 # Run a test
 #test_example(8)
 #
-def testperceptron(n):
+def test_multiperceptron(n):
     n_classes = T.shape[1]
     model = MultiClassPerceptron(n_classes, learning_rate=0.01, epochs=500)
     model.fit(X, T)
@@ -202,3 +197,19 @@ def testperceptron(n):
     actual_letter = letters_list[np.argmax(T[n])]
 
     print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
+
+#test_multiperceptron()
+
+def test_perceptron(n):
+    n_classes = T.shape[1]
+    model = Perceptron(X, T, learning_rate=0.01, epochs=500)
+    model.fit()
+
+    # Predict a single example
+    pred = model.predict(X[n])  # returns one-hot
+    predicted_letter = letters_list[np.argmax(pred)]
+    actual_letter = letters_list[np.argmax(T[n])]
+
+    print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
+
+#test_perceptron(0)
