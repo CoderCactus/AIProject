@@ -22,15 +22,19 @@ class Perceptron:
         - learning_rate: how much to update weights during training
         - epochs: how many times to iterate over the training data
         """
-        self.X = X
-        self.T = T
+        self.X = X.flatten()
+        self.T = T.flatten()
         n_features = X.shape[1]
+        self.bias = 0
         self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
         self.lr = learning_rate                # Store learning rate
         self.epochs = epochs                 # Store number of iterations
-        self.bias = 0                     # Will also be initialized during training
-        self.activation_func = np.where(X > 0, 1, 0)  # Use the unit step function for activation
 
+        assert X.shape[1] == self.weights.shape[0], "Mismatch in input feature size"
+
+
+    def activation_func(self, x):
+        return np.where(x > 0, 1, 0)
 
     # Fit the model to the training data
     def fit(self):
@@ -40,15 +44,17 @@ class Perceptron:
 
         # Training loop
         for epoch in range(self.epochs):
-            for idx, x_i in enumerate(X):
+            for x, t in zip(self.X, self.T):
                 # Calculate the linear output: dot product of weights and inputs + bias
-                linear_output = np.dot(x_i, self.weights) + self.bias
+                linear_output = np.dot(x, self.weights) + self.bias
                 # Apply the activation function (step function)
                 T_predicted = self.activation_func(linear_output)
 
                 # Update rule: adjust weights and bias if prediction is wrong
-                update = self.lr * (T_[idx] - T_predicted)
-                self.weights += update * x_i
+                update = (t - T_predicted)
+
+                self.weights += self.lr * update * x
+
                 self.bias += update
 
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
