@@ -12,9 +12,7 @@ letters_list = data['letters']
 print(f"Dataset loaded. Total samples: {X.shape[0]}, Input size: {X.shape[1]}, Number of classes: {T.shape[1]}\n")
 
 
-# Define the activation function: returns 1 if input > 0, else returns 0
-def unit_step_func(x):
-    return np.where(x > 0, 1, 0)
+
 
 # Define the Perceptron class
 class Perceptron:
@@ -28,7 +26,8 @@ class Perceptron:
         self.epochs = epochs                 # Store number of iterations
         self.weights = None                   # Will be initialized during training
         self.bias = 0                     # Will also be initialized during training
-        self.activation_func = unit_step_func  # Use the unit step function for activation
+        self.activation_func = np.where(x > 0, 1, 0)  # Use the unit step function for activation
+
 
     # Fit the model to the training data
     def fit(self, X, T):
