@@ -38,7 +38,7 @@ class Perceptron:
 
         n_features = X.shape[1]
         # Initialize weights and bias
-        self.weights = self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
+        self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
         self.bias = 0
 
         # Convert all y values to 0 or 1 (in case they are -1 or other values)
