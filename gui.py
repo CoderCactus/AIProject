@@ -26,7 +26,7 @@ learning_rate = st.sidebar.slider(
 
 variable = st.sidebar.toggle('Variable Learning Rate')
 
-epochs = st.sidebar.slider("Training Epochs", 5000, 40000, 20000, step=2000)
+epochs = st.sidebar.slider("Training Epochs", 100, 40000, 20000, step=2000)
 
 if st.sidebar.button("Load Saved Model"):
     try:
@@ -39,8 +39,9 @@ if st.sidebar.button("Load Saved Model"):
 if st.button("Train Model"):
     if algorithm == "Perceptron":
         n_classes = main.T.shape[1]
-        model = main.MultiClassPerceptron(n_classes, main.n_features, learning_rate, epochs)
+        model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
         model.fit(main.X, main.T)
+        st.session_state.model = model
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs, variable)
         model.train()
