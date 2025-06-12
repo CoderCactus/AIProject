@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np #Import NumPy for numerical operations
 import streamlit as st
 import pandas as pd
 import os
@@ -11,9 +11,6 @@ T = data['targets']
 letters_list = data['letters']
 print(f"Dataset loaded. Total samples: {X.shape[0]}, Input size: {X.shape[1]}, Number of classes: {T.shape[1]}\n")
 
-# perceptron.py
-
-import numpy as np  # Import NumPy for numerical operations
 
 # Define the activation function: returns 1 if input > 0, else returns 0
 def unit_step_func(x):
@@ -38,7 +35,7 @@ class Perceptron:
 
         n_features = X.shape[1]
         # Initialize weights and bias
-        self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
+        self.weights = self.weights = np.random.uniform(-0.01, 0.01, size=n_features)
         self.bias = 0
 
         # Convert all y values to 0 or 1 (in case they are -1 or other values)
