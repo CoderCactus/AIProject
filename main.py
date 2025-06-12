@@ -217,4 +217,4 @@ def test_perceptron(n):
 
     print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
 
-test_perceptron(0)
+#test_perceptron(0)
