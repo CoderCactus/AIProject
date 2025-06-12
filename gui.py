@@ -39,7 +39,7 @@ if st.sidebar.button("Load Saved Model"):
 if st.button("Train Model"):
     if algorithm == "Perceptron":
         n_classes = main.T.shape[1]
-        model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
+        model = main.MultiClassPerceptron(n_classes, main.n_features, learning_rate, epochs)
         model.fit(main.X, main.T)
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs, variable)
@@ -90,8 +90,6 @@ if "last_output" in st.session_state:
         )
         st.dataframe(out)
             
-
-
 if st.sidebar.button("Save Model"):
     if "model" in st.session_state:
         filename = f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz"
