@@ -73,28 +73,23 @@ class Perceptron:
 
 
 class MultiClassPerceptron:
-    def __init__(self, n_classes, learning_rate=0.01, epochs = 1000):
+    def __init__(self, n_classes, n_features, learning_rate=0.01, epochs=1000):
         self.n_classes = n_classes
         self.models = [
-            Perceptron(learning_rate = learning_rate, epochs = epochs)
-            for _ in range(n_classes)
+            Perceptron(n_features, learning_rate, epochs) for _ in range(n_classes)
         ]
 
     def fit(self, X, T_onehot):
-        for i in range(self.n_classes):
+        for i, model in enumerate(self.models):
             st.info(f"Training class {i}")
             binary_targets = T_onehot[:, i]
-            self.models[i].fit(X, binary_targets)
-            
+            model.fit(X, binary_targets)
 
     def predict(self, X):
-        # Get raw activation scores from each Perceptron
         scores = np.array([
-            np.dot(X, model.weights) + model.bias
-            for model in self.models
-        ]).T  # Shape: (n_samples, n_classes)
-
-        return scores  # Just the raw output vector
+            np.dot(X, model.weights) + model.bias for model in self.models
+        ]).T  # shape: (n_samples, n_classes)
+        return np.argmax(scores, axis=1)  # Predicted class labels
 
 
 
