@@ -50,8 +50,11 @@ class BinaryPerceptron:
         return self.activation(self.raw_output(x))
 
 class MultiClassPerceptron:
-    def __init__(self, n_classes, input_size, learning_rate=0.001, epochs=100):
+    def __init__(self, n_classes, input_size, learning_rate=0.001, epochs=100, variable=False):
         self.n_classes = n_classes
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+        self.variable = variable
         self.models = [
             BinaryPerceptron(input_size, learning_rate, epochs)
             for _ in range(n_classes)
@@ -75,7 +78,11 @@ class MultiClassPerceptron:
     def save(self, filename="model.npz"):
         weights = np.array([model.weights for model in self.models])
         biases = np.array([model.bias for model in self.models])
-        np.savez(filename, weights=weights, biases=biases)
+        np.savez(filename,
+                weights=weights,
+                biases=biases,
+                learning_rate=self.models[0].lr,
+                epochs=self.models[0].epochs)
 
     @classmethod
     def load(cls, filename, input_size, learning_rate=0.001, epochs=100):
@@ -84,10 +91,13 @@ class MultiClassPerceptron:
         biases = data['biases']
         n_classes = weights.shape[0]
         model = cls(n_classes, input_size, learning_rate, epochs)
+
         for i in range(n_classes):
             model.models[i].weights = weights[i]
             model.models[i].bias = biases[i]
+
         return model
+
     
 class WidrowHoff:
     def __init__(self, X, T, learning_rate, epochs, variable):

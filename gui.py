@@ -30,9 +30,26 @@ epochs = 10**(st.sidebar.slider("Training Epochs (10^)", 1, 5, 2, step=1))
 
 if st.sidebar.button("Load Saved Model"):
     try:
-        model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz", main.X, main.T, variable)
+        if algorithm == "Widrow-Hoff":
+            model = main.WidrowHoff.load(
+                f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz",
+                main.X,
+                main.T,
+                variable
+            )
+        else:
+            n_classes = main.T.shape[1]
+            input_size = main.X.shape[1]
+            model = main.MultiClassPerceptron.load(
+                f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz",
+                input_size,
+                learning_rate,
+                epochs
+            )
+
         st.session_state.model = model
         st.success("Model loaded from disk")
+
     except FileNotFoundError:
         st.error("No saved model found")
 
@@ -46,7 +63,7 @@ if st.button("Train Model"):
         n_classes = T_shuffled.shape[1]
         input_size = X_shuffled.shape[1]
     
-        model = main.MultiClassPerceptron(n_classes, input_size, learning_rate, epochs)
+        model = main.MultiClassPerceptron(n_classes, input_size, learning_rate, epochs, variable)
         model.train(X_shuffled, T_shuffled)
         st.session_state.model = model
     elif algorithm == "Widrow-Hoff":
