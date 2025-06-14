@@ -28,7 +28,7 @@ learning_rate = st.sidebar.slider(
     value=0.005, # Default value shown on the slider
     step=0.001, # Step size between options
     format="%.3f" # Show 3 decimal places in UI
-
+)
 # Sidebar: optional variable learning rate
 variable = st.sidebar.toggle('Variable Learning Rate', help = "Only works for Widrow-Hoff") # Only applies to Widrow-Hoff. Allows learning rate to decay gradually across epochs
 
