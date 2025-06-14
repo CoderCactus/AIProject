@@ -37,12 +37,22 @@ pip install -r requirements.txt
 ## Getting Started
 
 1. Launch the Streamlit app:
-
+    ```bash
+   Run executable.bat
+   ```
+   or run one of the following command on the terminal
+   
    ```bash
    streamlit run gui.py
    ```
 
-2. Open the web interface in your browser, draw a character, train a model and classify.
+   or
+
+    ```bash
+   python3 -m streamlit run gui.py
+   ```
+
+3. Open the web interface in your browser, draw a character, train a model and classify.
 
 
 ## Algorithms Implemented
