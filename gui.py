@@ -20,6 +20,7 @@ st.sidebar.header("Configuration") # Sidebar section for configuring training se
 
 # Sidebar: algorithm selection
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"]) # Dropdown menu for choosing classification algorithm
+
 # Sidebar: learning rate slider
 learning_rate = st.sidebar.slider(
     "Learning rate",
@@ -28,7 +29,7 @@ learning_rate = st.sidebar.slider(
     value=0.005, # Default value shown on the slider
     step=0.001, # Step size between options
     format="%.3f" # Show 3 decimal places in UI
-
+)
 # Sidebar: optional variable learning rate
 variable = st.sidebar.toggle('Variable Learning Rate', help = "Only works for Widrow-Hoff") # Only applies to Widrow-Hoff. Allows learning rate to decay gradually across epochs
 
@@ -56,6 +57,7 @@ if st.sidebar.button("Load Saved Model"):  # Load a saved model from file
                 learning_rate,
                 epochs
             )
+            
         # Save model instance to Streamlit's session state for reuse
         st.session_state.model = model
         st.success("Model loaded from disk")

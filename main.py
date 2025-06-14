@@ -143,6 +143,7 @@ class MultiClassPerceptron:
         Train each binary perceptron to recognize one class versus all others.
         """
         ib = st.empty() # Create a placeholder in Streamlit for progress updates
+
         # Loop over all classes to train one binary perceptron per class
         for class_index in range(self.n_classes):
             ib.info(f"Training perceptron for class {string.ascii_uppercase[class_index]}")
@@ -163,9 +164,11 @@ class MultiClassPerceptron:
         """
         Save model parameters (weights and biases) to file.
         """
+
         # Save weights and biases for all models (one per class)
         weights = np.array([model.weights for model in self.models])
         biases = np.array([model.bias for model in self.models])
+
         # Store model parameters in a .npz file
         np.savez(filename,
                 weights=weights,
@@ -179,10 +182,12 @@ class MultiClassPerceptron:
         """
         Load model parameters from file and restore model state.
         """
+
         # Load the saved model parameters from file
         data = np.load(filename)
         weights = data['weights']
         biases = data['biases']
+
         # Create a new MultiClassPerceptron instance
         n_classes = weights.shape[0]
         model = cls(n_classes, input_size, learning_rate, epochs)
@@ -204,12 +209,16 @@ class WidrowHoff:
         '''
         self.lr = learning_rate # Set the learning rate
         self.epochs = epochs # Set the number of training epochs
+        self.variable = variable # Flag for using learning rate decay
+
         self.X = np.hstack([X, np.ones((X.shape[0], 1))])  # Add bias column to input
         self.T = T # Target labels
+
         self.input_size = self.X.shape[1] # Number of input features (including bias)
         self.output_size = T.shape[1] # Number of output classes
+
         self.weights = np.random.uniform(-0.01, 0.01, size=(self.input_size, self.output_size)) # Initialize weights randomly
-        self.variable = variable # Flag for using learning rate decay
+        
         print(f"Initialized Widrow-Hoff model with learning rate {self.lr}, epochs {self.epochs}")
         print(f"Input size: {self.input_size}, Output size: {self.output_size}")
 
@@ -217,8 +226,9 @@ class WidrowHoff:
         """
         Train the model using the LMS update rule.
         """
+
         ib = st.empty()  # create a placeholder outside the loop
-        print("\nStarting training...\n")
+
         # Train for the specified number of epochs
         for epoch in range(1, self.epochs + 1):
             for x, t in zip(self.X, self.T):
@@ -234,12 +244,13 @@ class WidrowHoff:
 
                 ib.info(f"Epoch {epoch}/{self.epochs} complete")
 
-        st.info("\nTraining complete!")
+        ib.info("\nTraining complete!")
 
     def save(self, filename="model.npz"):
         """
         Save model weights and parameters to a file.
         """
+
         np.savez(filename,
                  weights=self.weights,
                  learning_rate=self.lr,
@@ -254,6 +265,7 @@ class WidrowHoff:
         """
         Load a saved Widrow-Hoff model from file.
         """
+
         data = np.load(filename)
         model = cls(X, T, data['learning_rate'], int(data['epochs']), data['variable'])
         model.weights = data['weights'] # Restore weights from saved file
@@ -264,14 +276,16 @@ class WidrowHoff:
         """
         Predict output vector for a single input vector using the learned weights.
         """
+
         input_with_bias = np.append(input_vector, 1.0) # Append bias term to input
+
         return np.dot(input_with_bias, self.weights) # Calculate prediction
 
 
 # Model Evaluation 
 def evaluate(model, X, T, letters):
     """
-    Evaluate the model’s prediction accuracy over the dataset.
+    Evaluate the model's prediction accuracy over the dataset.
     
     Parameters:
     - model: Trained model object with a predict() method
@@ -279,6 +293,7 @@ def evaluate(model, X, T, letters):
     - T: One-hot encoded target labels
     - letters: Class labels (A-Z)
     """
+    
     correct = 0 # Count correct predictions
     total = X.shape[0]  #Define total based on number of samples
 
