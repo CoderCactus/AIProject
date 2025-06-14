@@ -49,20 +49,7 @@ pip install -r requirements.txt
    streamlit run app.py
    ```
 
-3. Open the web interface in your browser, draw a character, train a model, and classify!
-
-
-## Folder Structure
-
-```
-├── app.py                      # Streamlit UI and classifier interface
-├── main.py                     # Model definitions and dataset loading
-├── Models/                     # Saved model files
-├── TrainingSets/
-│   └── synthetic_letter_dataset_20x20_50each.npz  # Training data
-├── README.md
-├── requirements.txt
-```
+3. Open the web interface in your browser, draw a character, train a model and classify.
 
 
 ## Algorithms Implemented
@@ -104,7 +91,7 @@ Each model is saved with:
 
 ## Example Use
 
-* Train a model with `Widrow-Hoff`, learning rate `0.005`, and 1000 epochs.
+* Train a model with `Widrow-Hoff`, learning rate `0.005`, and `1000` epochs.
 * Draw the letter "A" and classify.
 * View the 26-dimensional output vector.
 * Save the model.
@@ -113,5 +100,5 @@ Each model is saved with:
 
 ## Author
 
-* Developed by \[Constança Rocha, Maiara Almada, Neda Razavi, Tiago Silveira]
+* Developed by Constança Rocha, Maiara Almada, Neda Razavi and Tiago Silveira
 
