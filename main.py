@@ -99,26 +99,6 @@ class MultiClassPerceptron:
 
         self.models = []  # Each element will be a Perceptron instance
 
-    
-    def fit(self, X, T_onehot):
-        """
-        Train one Perceptron per class (letter), using one-vs-all strategy.
-        """
-        self.models = []  # Clear any previous models
-        ib= st.empty()  # create a placeholder outside the loop
-        for i in range(self.n_classes):
-            ib.info(f"Training Perceptron for letter {string.ascii_uppercase[i]}")
-            binary_targets = T_onehot[:, i]  # One-vs-all labels
-            perceptron = Perceptron(X, binary_targets, learning_rate=self.learning_rate, epochs=self.epochs)
-            perceptron.fit()
-            self.models.append(perceptron)
-        st.info("\nTraining complete!")
-
-        self.variable = variable
-        self.models = [
-            BinaryPerceptron(input_size, learning_rate, epochs)
-            for _ in range(n_classes)
-        ]
 
     def train(self, X, T_onehot):
         ib = st.empty()
@@ -142,10 +122,7 @@ class MultiClassPerceptron:
                 biases=biases,
                 learning_rate=self.models[0].lr,
                 epochs=self.models[0].epochs)
-
-
-    @Classmethod
-    def load(cls, filename, X, T):
+        
 
     @classmethod
     def load(cls, filename, input_size, learning_rate=0.001, epochs=100):
@@ -219,56 +196,11 @@ class WidrowHoff:
         return np.dot(input_with_bias, self.weights)
 
 
-# ----Optional Testing Functions----
-def test_example(index=0):
-    print(f"\n=== Running Test Example: Index {index} ===")
-    model = WidrowHoff(X, T, learning_rate=0.005, epochs=20000)
-    model.train()
-
-    test_input = X[index]
-    target_letter = letters_list[np.argmax(T[index])]
-    output = model.predict(test_input)
-    predicted_index = np.argmax(output)
-    predicted_letter = letters_list[predicted_index]
-
-    print("\n--- Classification Result ---")
-    print(f"Actual Letter:    {target_letter}")
-    print(f"Predicted Letter: {predicted_letter}")
-    print(f"Output Vector:    {np.round(output, 3)}")
-    
-
-    evaluate_model(model, X, T, letters_list)
-
-
-def evaluate_model(model, X, T, letters_list):
-    # Test accuracy on whole dataset
-    print("\nEvaluating model on entire dataset...")
 # Test prediction 
 def evaluate(model, X, T, letters):
     correct = 0
-    total = X.shape[0]  # ✅ Define total based on number of samples
-    accuracy = correct / total
-    print(f"\n✅ Test Accuracy: {accuracy:.2%}")
+    total = X.shape[0]  #Define total based on number of samples
 
-
-# Run a test
-def test_multiperceptron(n):
-    n_classes = T.shape[1]
-    model = MultiClassPerceptron(n_classes, learning_rate=0.01, epochs=500)
-    model.fit(X, T)
-
-    # Predict a single example
-    pred = model.predict(X[n])  # returns one-hot
-    predicted_letter = letters_list[np.argmax(pred)]
-    actual_letter = letters_list[np.argmax(T[n])]
-
-    print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
-
-#test_multiperceptron()
-def test_perceptron(n):
-    n_classes = T.shape[1]
-    model = Perceptron(X, T, learning_rate=0.01, epochs=500)
-    model.fit()
     for i in range(total):
         pred_index = model.predict(X[i])
         if isinstance(pred_index, np.ndarray):
@@ -278,7 +210,7 @@ def test_perceptron(n):
         pred_letter = letters[pred_index]
         actual_letter = letters[actual_index]
 
-        # If letters are arrays, convert to string
+        #If letters are arrays, convert to string
         if isinstance(pred_letter, (np.ndarray, list)):
             pred_letter = pred_letter.item()
         if isinstance(actual_letter, (np.ndarray, list)):
@@ -287,7 +219,6 @@ def test_perceptron(n):
         if pred_index == actual_index:
             correct += 1
 
-#test_perceptron(0)
     accuracy = correct / total
     print(f"\n Accuracy: {accuracy:.2%}")
 
