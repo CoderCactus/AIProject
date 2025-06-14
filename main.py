@@ -57,10 +57,12 @@ class Perceptron:
 
                 self.bias += update
 
-            if epoch % (self.epochs // 10) == 0 or epoch == 1:
+            ib = st.empty()  # create a placeholder outside the loop
+
+            if epoch % (self.epochs // 100) == 0 or epoch == 1:
 
 
-                st.info(f"Epoch {epoch}/{self.epochs} complete")
+                ib.info(f"Epoch {epoch}/{self.epochs} complete")
 
     # Predict the output class for new input data
     def predict(self, x):
@@ -84,8 +86,9 @@ class MultiClassPerceptron:
         Train one Perceptron per class (letter), using one-vs-all strategy.
         """
         self.models = []  # Clear any previous models
+        ib= st.empty()  # create a placeholder outside the loop
         for i in range(self.n_classes):
-            st.info(f"Training Perceptron for letter index {i}")
+            ib.info(f"Training Perceptron for letter index {i}")
             binary_targets = T_onehot[:, i]  # One-vs-all labels
             perceptron = Perceptron(X, binary_targets, learning_rate=self.learning_rate, epochs=self.epochs)
             perceptron.fit()
@@ -141,12 +144,13 @@ class WidrowHoff:
                 error = t - y
                 self.weights += self.lr * np.outer(x, error)
 
+            ib = st.empty()  # create a placeholder outside the loop
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
 
                 if self.variable:
                     self.lr *= 0.95
 
-                st.info(f"Epoch {epoch}/{self.epochs} complete")
+                ib.info(f"Epoch {epoch}/{self.epochs} complete")
 
         st.info("\nTraining complete!")
 
