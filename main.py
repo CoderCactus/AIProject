@@ -96,8 +96,11 @@ class MultiClassPerceptron:
         self.learning_rate = learning_rate # Set the learning rate for all perceptrons
         self.epochs = epochs # Set the number of epochs
 
-        self.models = []  # List to hold individual Perceptron models, one for each class
-
+        # List to hold individual Perceptron models, one for each class
+        self.models = [
+            BinaryPerceptron(input_size, learning_rate, epochs)
+            for _ in range(n_classes)]
+        
     def train(self, X, T_onehot):
         """
         Train each binary perceptron to recognize one class versus all others.
