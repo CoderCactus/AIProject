@@ -82,7 +82,7 @@ if canvas_result.image_data is not None:
 
             st.info(f"Classification Result: {result}")
 
-if "last_output" in st.session_state:
+if "last_output" in st.session_state and algorithm == "Widrow-Hoff":
     if st.button("Output Vector"):
         st.snow()
         out = pd.DataFrame(
