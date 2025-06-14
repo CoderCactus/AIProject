@@ -102,7 +102,7 @@ class MultiClassPerceptron:
         print(f"Model saved to {filename}")
 
     @classmethod
-    def load(cls, filename, X, T, variable):
+    def load(cls, filename, X, T):
         data = np.load(filename)
         model = cls(X, T, data['n_classes'], data['learning_rate'], data['epochs'], data['models'])
         print(f"Model loaded from {filename}")
