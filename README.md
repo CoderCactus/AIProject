@@ -114,7 +114,4 @@ Each model is saved with:
 ## Author
 
 * Developed by \[Constança Rocha, Maiara Almada, Neda Razavi, Tiago Silveira]
-* Contributions welcome!
 
-
-Let me know if you'd like a `requirements.txt` generated as well!
