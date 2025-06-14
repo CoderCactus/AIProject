@@ -31,9 +31,9 @@ class Perceptron:
         self.epochs = epochs                 # Store number of iterations
 
         assert X.shape[1] == self.weights.shape[0], "Mismatch in input feature size"
-
-
-    def activation_func(self, x):
+ 
+    
+    def activation_func(self, x):         # Activation function: step function
         return np.where(x > 0, 1, 0)
 
     # Fit the model to the training data
@@ -62,16 +62,12 @@ class Perceptron:
         ib.empty()
 
 
-    # Predict the output class for new input data
+    # Predict the output class for new input data (Input x)
     def predict(self, x):
-        """
-        Predicts the binary output for input x.
-        """
         linear_output = np.dot(self.weights, x) + self.bias
-
         return self.activation_func(linear_output)
 
-
+# ----Multi-Class Perceptron (One-vs-All)----
 class MultiClassPerceptron:
     def __init__(self, n_classes, learning_rate=0.01, epochs=1000):
         self.n_classes = n_classes
@@ -79,6 +75,7 @@ class MultiClassPerceptron:
         self.epochs = epochs
         self.models = []  # Each element will be a Perceptron instance
 
+    
     def fit(self, X, T_onehot):
         """
         Train one Perceptron per class (letter), using one-vs-all strategy.
@@ -101,7 +98,7 @@ class MultiClassPerceptron:
                 models = self.models)
         print(f"Model saved to {filename}")
 
-    @classmethod
+    @Classmethod
     def load(cls, filename, X, T):
         data = np.load(filename)
         model = cls(X, T, data['n_classes'], data['learning_rate'], data['epochs'], data['models'])
@@ -121,9 +118,10 @@ class MultiClassPerceptron:
         return np.argmax(scores, axis=1)  # Predicted letter index
 
 
-
+# ----Widrow-Hoff (LMS)----
 class WidrowHoff:
     def __init__(self, X, T, learning_rate, epochs, variable):
+        # Add bias to input, initialize weights
         self.lr = learning_rate
         self.epochs = epochs
         self.X = np.hstack([X, np.ones((X.shape[0], 1))])  # Add bias
@@ -147,7 +145,7 @@ class WidrowHoff:
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
 
                 if self.variable:
-                    self.lr *= 0.95
+                    self.lr *= 0.95    # optional decay
 
                 ib.info(f"Epoch {epoch}/{self.epochs} complete")
 
@@ -176,7 +174,7 @@ class WidrowHoff:
         return np.dot(input_with_bias, self.weights)
 
 
-# Test prediction 
+# ----Optional Testing Functions----
 def test_example(index=0):
     print(f"\n=== Running Test Example: Index {index} ===")
     model = WidrowHoff(X, T, learning_rate=0.005, epochs=20000)
@@ -198,6 +196,7 @@ def test_example(index=0):
 
 
 def evaluate_model(model, X, T, letters_list):
+    # Test accuracy on whole dataset
     print("\nEvaluating model on entire dataset...")
     correct = 0
     total = len(X)
@@ -215,8 +214,6 @@ def evaluate_model(model, X, T, letters_list):
 
 
 # Run a test
-#test_example(8)
-#
 def test_multiperceptron(n):
     n_classes = T.shape[1]
     model = MultiClassPerceptron(n_classes, learning_rate=0.01, epochs=500)
@@ -230,7 +227,6 @@ def test_multiperceptron(n):
     print(f"Actual: {actual_letter}, Predicted: {predicted_letter}")
 
 #test_multiperceptron()
-
 def test_perceptron(n):
     n_classes = T.shape[1]
     model = Perceptron(X, T, learning_rate=0.01, epochs=500)
