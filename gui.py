@@ -26,7 +26,7 @@ learning_rate = st.sidebar.slider(
 
 variable = st.sidebar.toggle('Variable Learning Rate', help = "Only works for Widrow-Hoff")
 
-epochs = 10**(st.sidebar.slider("Training Epochs", 1, 5, 2, step=1))
+epochs = 10**(st.sidebar.slider("Training Epochs (10^)", 1, 5, 2, step=1))
 
 if st.sidebar.button("Load Saved Model"):
     try:
