@@ -85,15 +85,14 @@ canvas_result = st_canvas(
 )
 
 if canvas_result.image_data is not None:
-    img = canvas_result.image_data
+    img = canvas_result.image_data # Get the drawing from the canvas
 
     if st.button("Classify Drawing"):
         if "model" not in st.session_state:
-            st.warning("Train the model first.")
+            st.warning("Train the model first.")  # Show a warning if the model is not trained yet
         else:
-            # Convert to grayscale, resize to match model input
-            img_array = np.array(img)
-            gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY)
+            img_array = np.array(img) # Convert the canvas image to a NumPy array
+            gray = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGB2GRAY) # Convert to grayscale
             resized = cv2.resize(gray, (20, 20))  # adjust to your model's expected size
             flattened = resized.flatten() / 255.0  # normalize
 
