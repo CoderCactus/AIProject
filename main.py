@@ -1,7 +1,6 @@
 import numpy as np #Import NumPy for numerical operations
 import streamlit as st
-import pandas as pd
-import os
+
 
 # Load the dataset
 print("Loading dataset...")
@@ -59,7 +58,7 @@ class Perceptron:
 
             ib = st.empty()  # create a placeholder outside the loop
 
-            if epoch % (self.epochs // 100) == 0 or epoch == 1:
+            if epoch % (self.epochs // 10) == 0 or epoch == 1:
 
 
                 ib.info(f"Epoch {epoch}/{self.epochs} complete")
