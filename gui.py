@@ -24,9 +24,9 @@ learning_rate = st.sidebar.slider(
     format="%.3f"      # Display with 5 decimal places
 )
 
-variable = st.sidebar.toggle('Variable Learning Rate')
+variable = st.sidebar.toggle('Variable Learning Rate', help = "Only works for Widrow-Hoff")
 
-epochs = st.sidebar.slider("Training Epochs", 100, 40000, 20000, step=2000)
+epochs = 10**(st.sidebar.slider("Training Epochs (10^)", 1, 5, 2, step=1))
 
 if st.sidebar.button("Load Saved Model"):
     try:
@@ -82,9 +82,9 @@ if canvas_result.image_data is not None:
 
             st.info(f"Classification Result: {result}")
 
-if "last_output" in st.session_state:
+if "last_output" in st.session_state and algorithm == "Widrow-Hoff":
     if st.button("Output Vector"):
-        #st.snow()
+        st.snow()
         out = pd.DataFrame(
             [np.round(st.session_state.last_output, 3)],
             columns=main.letters_list
