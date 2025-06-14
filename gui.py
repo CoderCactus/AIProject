@@ -30,17 +30,41 @@ epochs = 10**(st.sidebar.slider("Training Epochs (10^)", 1, 5, 2, step=1))
 
 if st.sidebar.button("Load Saved Model"):
     try:
-        model = main.WidrowHoff.load(f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz", main.X, main.T, variable)
+        if algorithm == "Widrow-Hoff":
+            model = main.WidrowHoff.load(
+                f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz",
+                main.X,
+                main.T,
+                variable
+            )
+        else:
+            n_classes = main.T.shape[1]
+            input_size = main.X.shape[1]
+            model = main.MultiClassPerceptron.load(
+                f"Models/model_{algorithm}_lr{learning_rate}_ep{epochs}_variable{variable}.npz",
+                input_size,
+                learning_rate,
+                epochs
+            )
+
         st.session_state.model = model
         st.success("Model loaded from disk")
+
     except FileNotFoundError:
         st.error("No saved model found")
 
 if st.button("Train Model"):
     if algorithm == "Perceptron":
-        n_classes = main.T.shape[1]
-        model = main.MultiClassPerceptron(n_classes, learning_rate, epochs)
-        model.fit(main.X, main.T)
+        indices = np.random.permutation(len(main.X))
+        X_shuffled = main.X[indices]
+        T_shuffled = main.T[indices]
+
+
+        n_classes = T_shuffled.shape[1]
+        input_size = X_shuffled.shape[1]
+    
+        model = main.MultiClassPerceptron(n_classes, input_size, learning_rate, epochs, variable)
+        model.train(X_shuffled, T_shuffled)
         st.session_state.model = model
     elif algorithm == "Widrow-Hoff":
         model = main.WidrowHoff(main.X, main.T, learning_rate, epochs, variable)
@@ -73,12 +97,14 @@ if canvas_result.image_data is not None:
             flattened = resized.flatten() / 255.0  # normalize
 
             model = st.session_state.model
-            output = model.predict(flattened)
-            predicted_index = np.argmax(output)
+            if algorithm == "Widrow-Hoff":
+                output = model.predict(flattened)             # ➜ returns vector of shape (26,)
+                predicted_index = np.argmax(output)           # ➜ pick class with max score
+                st.session_state["last_output"] = output      # ➜ save vector for inspection
+            else:  # Perceptron
+                predicted_index = model.predict(flattened)[0] # ➜ returns int index
+
             result = main.letters_list[predicted_index]
-
-            st.session_state["last_output"] = output
-
             st.info(f"Classification Result: {result}")
 
 if "last_output" in st.session_state and algorithm == "Widrow-Hoff":
