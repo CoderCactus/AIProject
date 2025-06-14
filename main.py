@@ -37,7 +37,7 @@ class Perceptron:
 
     # Fit the model to the training data
     def fit(self):
-
+        ib = st.empty()  # create a placeholder outside the loop
         # Convert all y values to 0 or 1 (in case they are -1 or other values)
         T_ = np.where(self.T > 0, 1, 0)
 
@@ -56,12 +56,10 @@ class Perceptron:
 
                 self.bias += update
 
-            ib = st.empty()  # create a placeholder outside the loop
-
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
-
-
                 ib.info(f"Epoch {epoch}/{self.epochs} complete")
+        ib.empty()
+
 
     # Predict the output class for new input data
     def predict(self, x):
@@ -92,6 +90,7 @@ class MultiClassPerceptron:
             perceptron = Perceptron(X, binary_targets, learning_rate=self.learning_rate, epochs=self.epochs)
             perceptron.fit()
             self.models.append(perceptron)
+        st.info("\nTraining complete!")
 
     def save(self, filename="model.npz"):
         np.savez(filename,
@@ -136,6 +135,7 @@ class WidrowHoff:
         print(f"Input size: {self.input_size}, Output size: {self.output_size}")
 
     def train(self):
+        ib = st.empty()  # create a placeholder outside the loop
         print("\nStarting training...\n")
         for epoch in range(1, self.epochs + 1):
             for x, t in zip(self.X, self.T):
@@ -143,7 +143,6 @@ class WidrowHoff:
                 error = t - y
                 self.weights += self.lr * np.outer(x, error)
 
-            ib = st.empty()  # create a placeholder outside the loop
             if epoch % (self.epochs // 10) == 0 or epoch == 1:
 
                 if self.variable:
