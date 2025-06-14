@@ -1,5 +1,6 @@
 import numpy as np #Import NumPy for numerical operations
 import streamlit as st
+import string
 
 
 # Load the dataset
@@ -85,7 +86,7 @@ class MultiClassPerceptron:
         self.models = []  # Clear any previous models
         ib= st.empty()  # create a placeholder outside the loop
         for i in range(self.n_classes):
-            ib.info(f"Training Perceptron for letter index {i}")
+            ib.info(f"Training Perceptron for letter {string.ascii_uppercase[i]}")
             binary_targets = T_onehot[:, i]  # One-vs-all labels
             perceptron = Perceptron(X, binary_targets, learning_rate=self.learning_rate, epochs=self.epochs)
             perceptron.fit()
