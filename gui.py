@@ -20,6 +20,7 @@ st.sidebar.header("Configuration") # Sidebar section for configuring training se
 
 # Sidebar: algorithm selection
 algorithm = st.sidebar.selectbox("Select Algorithm", ["Perceptron", "Widrow-Hoff"]) # Dropdown menu for choosing classification algorithm
+
 # Sidebar: learning rate slider
 learning_rate = st.sidebar.slider(
     "Learning rate",
@@ -56,6 +57,7 @@ if st.sidebar.button("Load Saved Model"):  # Load a saved model from file
                 learning_rate,
                 epochs
             )
+            
         # Save model instance to Streamlit's session state for reuse
         st.session_state.model = model
         st.success("Model loaded from disk")

@@ -12,64 +12,17 @@ letters_list = data['letters'] # Class letter labels (A-Z)
 print(f"Dataset loaded. Total samples: {X.shape[0]}, Input size: {X.shape[1]}, Number of classes: {T.shape[1]}\n")
 
 
-
-
-# Define the Perceptron class (single layer binary)
-class Perceptron:
-    """
-    Simple binary perceptron using a step activation function.
-    """
-    def __init__(self, X, T, learning_rate=0.01, epochs=1000):
-        """
-        Initializes the perceptron model with:
-        - X: Training data
-        - T: Target labels1
-        - learning_rate: how much to update weights during training
-        - epochs: how many times to iterate over the training data
-        """
-        self.X = X.flatten() # Flatten the input features to 1D
-        self.T = T.flatten() # Flatten target values to 1D
-        n_features = X.shape[1] # Number of features per sample
-        self.bias = 0 # Initialize bias term to zero
-        self.weights = np.random.uniform(-0.01, 0.01, size=n_features) # Initialize weights with small random values
-        self.lr = learning_rate                # Set the learning rate
-        self.epochs = epochs                 # Set the number of  training iterations
-
-        assert X.shape[1] == self.weights.shape[0] # Ensure input feature size matches the weight vector
- 
-    
-    def activation_func(self, x): 
-        """
-        Step function activation.
-        Returns 1 if x > 0, else 0.
-        """        
-        return np.where(x > 0, 1, 0)
-
-    # Fit the model to the training data
-    def fit(self):
-        """
-        Trains the perceptron on the dataset.
-        """
-        ib = st.empty()  # Placeholder for status updates in Streamlit UI
-        # Convert all targets to binary (if needed)
-        T_ = np.where(self.T > 0, 1, 0)
-
-        for epoch in range(self.epochs):
-            for x, t in zip(self.X, self.T):
-                # Calculate the linear output: dot product of weights and inputs + bias
-                linear_output = np.dot(x, self.weights) + self.bias
-                # Apply the activation function (step function)
-                T_predicted = self.activation_func(linear_output)
-
-# (Improved) Binary Perceptron
+# Defines the Perceptron class (single layer binary)
 class BinaryPerceptron:
     """
-    Improved binary perceptron using ±1 as targets and prediction outputs.
+    Binary perceptron using ±1 as targets and prediction outputs.
     """
+
     def __init__(self, input_size, learning_rate=0.01, epochs=20):
         """
         Initialize binary perceptron with random weights and specified learning parameters.
         """
+
         self.weights = np.random.uniform(-0.01, 0.01, size=input_size) # Initialize random weights
         self.bias = 0.0 # Bias term initialized to zero
         self.lr = learning_rate # Define learning rate
@@ -81,6 +34,7 @@ class BinaryPerceptron:
         Step activation function for binary classification.
         Returns 1 if input is non-negative, else -1.
         """
+
         return 1 if x >= 0 else -1
 
     def train(self, X, T):
@@ -88,6 +42,7 @@ class BinaryPerceptron:
         Train the perceptron using the Perceptron learning rule.
         Converts 0/1 labels to -1/1 before training.
         """
+
         # Convert targets from 0/1 to -1/+1 for perceptron
         T = np.where(T > 0, 1, -1).astype(np.float32)
         ib = st.empty() # Streamlit status placeholder
@@ -108,6 +63,7 @@ class BinaryPerceptron:
         '''
         Predict the output class for new input data (Input x)
         '''
+
         linear_output = np.dot(self.weights, x) + self.bias
         return self.activation_func(linear_output)
 
@@ -115,12 +71,14 @@ class BinaryPerceptron:
         """
         Calculate raw output (before activation).
         """
+
         return np.dot(self.weights, x) + self.bias
 
     def predict(self, x):
         """
         Return the predicted binary class for input vector x.
         """
+
         return self.activation(self.raw_output(x))
 
 # Multi-Class Perceptron using One-vs-All
@@ -128,10 +86,12 @@ class MultiClassPerceptron:
     """
     Multi-class classification using multiple binary perceptrons in a one-vs-all setup.
     """
+
     def __init__(self, n_classes, input_size, learning_rate=0.001, epochs=100, variable=False):
         """
         Initialize multiple binary perceptrons for multi-class classification.
         """
+
         self.n_classes = n_classes # Total number of unique classes
         self.learning_rate = learning_rate # Set the learning rate for all perceptrons
         self.epochs = epochs # Set the number of epochs
@@ -142,7 +102,9 @@ class MultiClassPerceptron:
         """
         Train each binary perceptron to recognize one class versus all others.
         """
+
         ib = st.empty() # Create a placeholder in Streamlit for progress updates
+
         # Loop over all classes to train one binary perceptron per class
         for class_index in range(self.n_classes):
             ib.info(f"Training perceptron for class {string.ascii_uppercase[class_index]}")
@@ -153,6 +115,7 @@ class MultiClassPerceptron:
         """
         Predict class index by choosing the perceptron with the highest raw output.
         """
+
         if X.ndim == 1:
             X = X.reshape(1, -1) # Ensure input is in batch format for prediction
         scores = np.array([[model.raw_output(x) for model in self.models] for x in X])  # Calculate scores for all samples across all models
@@ -163,9 +126,11 @@ class MultiClassPerceptron:
         """
         Save model parameters (weights and biases) to file.
         """
+
         # Save weights and biases for all models (one per class)
         weights = np.array([model.weights for model in self.models])
         biases = np.array([model.bias for model in self.models])
+
         # Store model parameters in a .npz file
         np.savez(filename,
                 weights=weights,
@@ -179,10 +144,12 @@ class MultiClassPerceptron:
         """
         Load model parameters from file and restore model state.
         """
+
         # Load the saved model parameters from file
         data = np.load(filename)
         weights = data['weights']
         biases = data['biases']
+
         # Create a new MultiClassPerceptron instance
         n_classes = weights.shape[0]
         model = cls(n_classes, input_size, learning_rate, epochs)
@@ -198,18 +165,24 @@ class WidrowHoff:
     """
     Widrow-Hoff model using LMS (least mean squares) learning for multi-class regression/classification.
     """
+
     def __init__(self, X, T, learning_rate, epochs, variable):
         '''
         Initialize the Widrow-Hoff model.
         '''
+        
         self.lr = learning_rate # Set the learning rate
         self.epochs = epochs # Set the number of training epochs
+        self.variable = variable # Flag for using learning rate decay
+
         self.X = np.hstack([X, np.ones((X.shape[0], 1))])  # Add bias column to input
         self.T = T # Target labels
+
         self.input_size = self.X.shape[1] # Number of input features (including bias)
         self.output_size = T.shape[1] # Number of output classes
+
         self.weights = np.random.uniform(-0.01, 0.01, size=(self.input_size, self.output_size)) # Initialize weights randomly
-        self.variable = variable # Flag for using learning rate decay
+        
         print(f"Initialized Widrow-Hoff model with learning rate {self.lr}, epochs {self.epochs}")
         print(f"Input size: {self.input_size}, Output size: {self.output_size}")
 
@@ -217,8 +190,9 @@ class WidrowHoff:
         """
         Train the model using the LMS update rule.
         """
+
         ib = st.empty()  # create a placeholder outside the loop
-        print("\nStarting training...\n")
+
         # Train for the specified number of epochs
         for epoch in range(1, self.epochs + 1):
             for x, t in zip(self.X, self.T):
@@ -234,12 +208,13 @@ class WidrowHoff:
 
                 ib.info(f"Epoch {epoch}/{self.epochs} complete")
 
-        st.info("\nTraining complete!")
+        ib.info("\nTraining complete!")
 
     def save(self, filename="model.npz"):
         """
         Save model weights and parameters to a file.
         """
+
         np.savez(filename,
                  weights=self.weights,
                  learning_rate=self.lr,
@@ -254,6 +229,7 @@ class WidrowHoff:
         """
         Load a saved Widrow-Hoff model from file.
         """
+
         data = np.load(filename)
         model = cls(X, T, data['learning_rate'], int(data['epochs']), data['variable'])
         model.weights = data['weights'] # Restore weights from saved file
@@ -264,14 +240,16 @@ class WidrowHoff:
         """
         Predict output vector for a single input vector using the learned weights.
         """
+
         input_with_bias = np.append(input_vector, 1.0) # Append bias term to input
+
         return np.dot(input_with_bias, self.weights) # Calculate prediction
 
 
 # Model Evaluation 
 def evaluate(model, X, T, letters):
     """
-    Evaluate the model’s prediction accuracy over the dataset.
+    Evaluate the model's prediction accuracy over the dataset.
     
     Parameters:
     - model: Trained model object with a predict() method
@@ -279,6 +257,7 @@ def evaluate(model, X, T, letters):
     - T: One-hot encoded target labels
     - letters: Class labels (A-Z)
     """
+
     correct = 0 # Count correct predictions
     total = X.shape[0]  #Define total based on number of samples
 
