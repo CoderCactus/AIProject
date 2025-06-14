@@ -1,6 +1,6 @@
 # Character Classifier
 
-This is a Streamlit-based web app for training and testing character classification models using either the **Perceptron** or **Widrow-Hoff (LMS)** learning algorithms. Users can draw letters, train models, load/save them, and get predictions in real-time.
+This is a Streamlit-based web app for training and testing character classification models using either the **Perceptron** or **Widrow-Hoff** learning algorithms. Users can draw letters, train models, load/save them, and get predictions in real-time.
 
 
 ## Features
@@ -36,20 +36,13 @@ pip install -r requirements.txt
 
 ## Getting Started
 
-1. Clone the repository:
+1. Launch the Streamlit app:
 
    ```bash
-   git clone https://github.com/yourusername/character-classifier.git
-   cd character-classifier
+   streamlit run gui.py
    ```
 
-2. Launch the Streamlit app:
-
-   ```bash
-   streamlit run app.py
-   ```
-
-3. Open the web interface in your browser, draw a character, train a model and classify.
+2. Open the web interface in your browser, draw a character, train a model and classify.
 
 
 ## Algorithms Implemented
@@ -71,7 +64,7 @@ pip install -r requirements.txt
 The training dataset is a `.npz` file:
 
 * 26 classes (A–Z)
-* Each image: 20x20 grayscale
+* Each image: 20x20 black and white
 * Normalized pixel values (0–1)
 * One-hot encoded labels
 
